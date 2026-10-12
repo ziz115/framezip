@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b1220" />
+    <meta name="description" content="FrameZip — حوّل الفيديو إلى صور مرقمة داخل متصفحك." />
+    <title>FrameZip — استخراج إطارات الفيديو</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles-glass.css" />
+  </head>
+  <body>
+    <video id="ambient-bg" class="ambient-bg" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+      <source src="./media/background-web.mp4" type="video/mp4" />
+    </video>
+    <div class="ambient-tint" aria-hidden="true"></div>
+    <div class="ambient-noise" aria-hidden="true"></div>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="FrameZip الرئيسية">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 38 38" fill="none"><rect x="4" y="7" width="30" height="24" rx="6" stroke="currentColor" stroke-width="2.4"/><path d="M4 14h30M4 24h30M12 7v7M24 7v7M12 24v7M24 24v7" stroke="currentColor" stroke-width="2.2"/><path d="m16 17 7 4-7 4v-8Z" fill="currentColor"/></svg>
+          </span>
+          <span>Frame<span>Zip</span></span>
+        </a>
+        <div class="topbar-actions">
+          <div class="glass-control-dock" aria-label="أدوات الخلفية والموسيقى">
+            <button id="ambient-toggle" class="glass-icon-button" type="button" aria-label="إيقاف حركة الخلفية"><img src="./media/icon-background.svg" alt="" /><span>الخلفية</span></button>
+            <button id="music-toggle" class="glass-icon-button" type="button" aria-label="فتح الموسيقى"><img src="./media/icon-music.svg" alt="" /><span>الموسيقى</span></button>
+            <button id="gallery-toggle" class="glass-icon-button" type="button" aria-label="الانتقال إلى المعاينة"><img src="./media/icon-gallery.svg" alt="" /><span>المعرض</span></button>
+          </div>
+          <div class="topbar-note"><span class="status-dot"></span> معالجة محلية وآمنة</div>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><span>01</span> من الحركة إلى لقطة</div>
+            <h1>حوّل أي فيديو<br /><em>إلى صور مرتبة.</em></h1>
+            <p class="hero-lead">استخرج اللقطات التي تحتاجها، أضف لها ترقيمًا واضحًا، وخذها كلها في ملف ZIP واحد — بدون رفع الفيديو إلى أي مكان.</p>
+            <div class="feature-list">
+              <div class="feature-item"><span class="feature-number">01</span><div><strong>خصوصيتك أولًا</strong><small>كل المعالجة تتم داخل متصفحك.</small></div></div>
+              <div class="feature-item"><span class="feature-number">02</span><div><strong>أسماء مرتبة</strong><small>الترقيم في اسم الملف فقط، بلا كتابة على الصورة.</small></div></div>
+              <div class="feature-item"><span class="feature-number">03</span><div><strong>ZIP جاهز</strong><small>حمّل كل اللقطات في ضغطة واحدة.</small></div></div>
+            </div>
+          </div>
+
+          <section class="workspace-card" aria-labelledby="workspace-title">
+            <div class="card-header">
+              <div><span class="card-kicker">مساحة العمل</span><h2 id="workspace-title">ابدأ بفيديوك</h2></div>
+              <span class="step-chip">الخطوة <b>01</b> / 03</span>
+            </div>
+
+            <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="اختر فيديو أو اسحبه هنا">
+              <input id="video-input" type="file" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" />
+              <div class="upload-illustration" aria-hidden="true"><svg viewBox="0 0 80 80" fill="none"><rect x="13" y="17" width="54" height="46" rx="13" stroke="currentColor" stroke-width="2"/><path d="M13 30h54M13 50h54M27 17v13M53 17v13M27 50v13M53 50v13" stroke="currentColor" stroke-width="2"/><path d="m34 34 15 9-15 9v-18Z" fill="currentColor"/></svg></div>
+              <strong>اسحب الفيديو هنا</strong>
+              <span>أو <u>اختر ملفًا من جهازك</u></span>
+              <button class="file-picker-button" id="file-picker-button" type="button">اختيار فيديو من الجهاز</button>
+              <small>MP4 · MOV · WEBM · حتى 500MB</small>
+            </div>
+
+            <div id="file-card" class="file-card is-hidden">
+              <div class="file-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M6 3h8l4 4v14H6V3Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 3v5h5M9 13h6M9 17h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+              <div class="file-meta"><strong id="file-name">video.mp4</strong><span id="file-details">—</span></div>
+              <button id="remove-file" class="icon-button" type="button" aria-label="إزالة الفيديو">×</button>
+            </div>
+
+            <div class="settings-row">
+              <label for="frame-count"><span>عدد الصور</span><small>يُحدّد تلقائيًا حسب مدة الفيديو</small></label>
+              <div class="count-control"><button id="decrease-count" type="button" aria-label="تقليل عدد الصور">−</button><input id="frame-count" type="number" value="12" min="2" max="120" inputmode="numeric" /><button id="increase-count" type="button" aria-label="زيادة عدد الصور">+</button></div>
+            </div>
+            <div class="quality-row">
+              <label for="image-quality"><span>جودة الصور</span><small>يحافظ على دقة الفيديو حتى 4K</small></label>
+              <select id="image-quality" aria-label="اختيار جودة الصور"><option value="0.96">عالية جدًا — JPEG 96%</option><option value="0.92" selected>عالية — JPEG 92%</option><option value="0.86">متوازنة — JPEG 86%</option></select>
+            </div>
+
+            <button id="start-button" class="primary-button" type="button" disabled><span class="button-icon">✦</span> استخراج الإطارات <span class="arrow">←</span></button>
+            <p class="privacy-note"><span>♧</span> الفيديو لا يغادر جهازك، وتبدأ المعالجة فورًا.</p>
+
+            <div id="progress-panel" class="progress-panel is-hidden" aria-live="polite">
+              <div class="progress-top"><div><span class="card-kicker">جارٍ العمل</span><strong id="progress-label">نجهّز اللقطة الأولى…</strong></div><span id="progress-percent">0%</span></div>
+              <div class="progress-track"><span id="progress-bar"></span></div>
+              <div class="progress-bottom"><span id="progress-detail">0 من 12 صورة</span><button id="cancel-button" type="button">إلغاء العملية</button></div>
+            </div>
+
+            <div id="result-panel" class="result-panel is-hidden" aria-live="polite">
+              <div class="result-heading"><div class="success-mark">✓</div><div><span class="card-kicker">اكتملت المعالجة</span><strong id="result-label">12 صورة جاهزة</strong></div></div>
+              <button id="download-button" class="download-button" type="button"><span>↓</span> تنزيل ملف ZIP</button>
+              <button id="restart-button" class="text-button" type="button">استخراج من فيديو آخر</button>
+            </div>
+          </section>
+        </section>
+
+        <section id="gallery-section" class="gallery-section is-hidden" aria-labelledby="gallery-title">
+          <div class="section-heading"><div><span class="eyebrow"><span>02</span> المعاينة</span><h2 id="gallery-title">لقطاتك، بالترتيب.</h2></div><span id="gallery-count" class="gallery-count">0 صورة</span></div>
+          <div id="gallery" class="gallery-grid"></div>
+        </section>
+
+        <section id="music-section" class="music-section glass-panel" aria-labelledby="music-title">
+          <div class="music-intro">
+            <span class="eyebrow"><span>03</span> موسيقى المكان</span>
+            <h2 id="music-title">المشهد له صوت.</h2>
+            <p>شغّل الملفات الصوتية المرخّصة من جهازك في قائمة متتابعة؛ تنتقل الأغنية التالية تلقائيًا عند انتهاء الحالية.</p>
+          </div>
+          <div class="music-actions">
+            <div class="local-player">
+              <div class="local-player-heading"><span class="music-dot"></span><span id="now-playing">الموسيقى المحلية</span><span class="local-badge">تشغيل متتابع</span></div>
+              <audio id="ambient-audio" controls autoplay loop preload="auto" src="./media/framezip-song.mp3"></audio>
+            </div>
+            <input id="audio-input" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg" multiple hidden />
+            <button id="add-audio-button" class="music-add-button" type="button"><span>＋</span> أو أضف ملفات صوتية من جهازك</button>
+            <div id="playlist" class="playlist" aria-live="polite"><div class="playlist-empty"><span class="equalizer">▂▅▇</span><span>أضف أغانيك المرخّصة</span><small>تعمل بالتتابع تلقائيًا بعد بدء التشغيل</small></div></div>
+          </div>
+        </section>
+      </main>
+
+      <footer><span>FrameZip</span><span>أداة بسيطة لصنّاع المحتوى والمصممين</span><span>صُنع ليبقى سريعًا</span></footer>
+    </div>
+    <div id="toast" class="toast" role="status"></div>
+    <video id="source-video" muted playsinline preload="metadata"></video>
+    <script src="./app.js"></script>
+  </body>
+</html>
